@@ -39,8 +39,10 @@ RIZAP 的な「赤×黒×顔出しビフォーアフター」の煽り訴求の�
 
 ## デプロイ
 
-GitHub Pages にて公開。
-カスタムドメイン: **<https://design.fitness-gym-reshape.riumu.net>**
+GitHub Pages にて公開済（HTTPS 強制 ON、Let's Encrypt 証明書 approved）。
+
+- **Live**: <https://design.fitness-gym-reshape.riumu.net/>
+- **Repo**: <https://github.com/torifo/design-fitness-gym-reshape>
 
 `.nojekyll` で Jekyll を無効化（SVG / `{{}}` の衝突回避）。
 
