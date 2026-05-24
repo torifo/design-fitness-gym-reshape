@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FORGE STUDIO — 静かに、確実に、鍛え直す。</title>
+  <meta name="description" content="FORGE STUDIO は 25–45 歳のための premium personal training boutique。煽りではなく、体組成 metric の透明な開示で 3〜6 ヶ月の transformation を証明する。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=Fraunces:wght@300;400;500;600&family=Shippori+Mincho+B1:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f4f1ec;
+      --fg: #0e0e10;
+      --muted: #6b6864;
+      --line: #cfc9c0;
+      --accent: #c2410c;
+      --accent-hi: #ea580c;
+      --metric: #1a1a1d;
+      --font-sans: 'Inter Tight', 'Noto Sans JP', sans-serif;
+      --font-serif: 'Fraunces', 'Shippori Mincho B1', serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+      --maxw: 1240px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+    [id] { scroll-margin-top: 5rem; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-sans);
+      font-weight: 400;
+      line-height: 1.65;
+      letter-spacing: .005em;
+      word-break: auto-phrase;
+      overflow-wrap: anywhere;
+      overflow-x: hidden;
+    }
+
+    :where(h1, h2, h3, h4, [class*="title"], [class*="head"]) { text-wrap: balance; }
+    :where(p, li, dd) { text-wrap: pretty; }
+
+    .num,
+    .metric-value,
+    .price-num,
+    time,
+    .stat-num {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1, "lnum" 1;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; height: auto; }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+      border-radius: 1px;
+    }
+
+    /* ───────── HEADER ───────── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(244, 241, 236, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+      padding: 1rem clamp(1.2rem, 4vw, 3rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: 1.05rem;
+      letter-spacing: .26em;
+      white-space: nowrap;
+    }
+    .brand-mark {
+      display: inline-block;
+      width: 1.1rem;
+      height: 1.1rem;
+      background:
+        linear-gradient(135deg, var(--accent) 0 50%, var(--fg) 50% 100%);
+      border-radius: 1px;
+    }
+    nav.top ul {
+      list-style: none;
+      display: flex;
+      gap: clamp(1rem, 2.4vw, 2.2rem);
+      font-size: .78rem;
+      letter-spacing: .22em;
+      font-weight: 500;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    nav.top a { position: relative; padding: .25rem 0; transition: color .25s var(--ease); }
+    nav.top a:hover { color: var(--fg); }
+    nav.top a::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0; bottom: -2px;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform .35s var(--ease);
+    }
+    nav.top a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .9rem 1.4rem;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      font-size: .82rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      border-radius: 2px;
+      white-space: nowrap;
+      transition: background .25s var(--ease), transform .25s var(--ease);
+    }
+    .btn:hover { background: var(--accent-hi); transform: translateY(-1px); }
+    .btn .arrow { transition: transform .25s var(--ease); }
+    .btn:hover .arrow { transform: translateX(4px); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--fg);
+    }
+    .btn-ghost:hover { background: var(--fg); color: var(--bg); transform: translateY(-1px); }
+
+    .header-cta { display: inline-flex; align-items: center; gap: 1rem; }
+    .header-phone {
+      display: none;
+      font-family: var(--font-mono);
+      font-size: .78rem;
+      letter-spacing: .12em;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ───────── HERO ───────── */
+    .hero {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: clamp(3.5rem, 8vw, 7rem) clamp(1.2rem, 4vw, 3rem) clamp(3rem, 6vw, 5rem);
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: clamp(2rem, 5vw, 4.5rem);
+      align-items: end;
+      position: relative;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .8rem;
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.6rem;
+    }
+    .hero-eyebrow::before {
+      content: "";
+      width: 1.8rem;
+      height: 1px;
+      background: var(--accent);
+    }
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: clamp(2.6rem, 7.4vw, 6rem);
+      line-height: 1.02;
+      letter-spacing: -.015em;
+      color: var(--fg);
+    }
+    .hero h1 .serif-it {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--muted);
+    }
+    .hero h1 .accent {
+      color: var(--accent);
+      font-style: normal;
+    }
+    .hero-lead {
+      max-width: 32em;
+      margin-top: 1.8rem;
+      color: var(--muted);
+      font-size: clamp(.95rem, 1.15vw, 1.05rem);
+      line-height: 1.85;
+    }
+    .hero-actions {
+      margin-top: 2.4rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .hero-fineprint {
+      margin-top: 1.4rem;
+      font-size: .74rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+
+    .hero-figure {
+      position: relative;
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+      background: var(--metric);
+      border: 1px solid var(--line);
+    }
+    .hero-figure img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(1) contrast(1.05);
+      opacity: .88;
+      transition: transform 1.2s var(--ease), opacity .8s var(--ease);
+    }
+    .hero-figure:hover img { transform: scale(1.04); opacity: 1; }
+    .hero-figure-stamp {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      padding: .9rem 1.1rem;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .hero-figure-stat {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: .8rem 1rem;
+      background: rgba(14, 14, 16, .78);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      letter-spacing: .1em;
+      line-height: 1.5;
+      border-left: 2px solid var(--accent);
+    }
+    .hero-figure-stat strong {
+      display: block;
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: .04em;
+    }
+
+    /* ───────── SECTION COMMON ───────── */
+    section { max-width: var(--maxw); margin: 0 auto; padding: clamp(3.5rem, 7vw, 6.5rem) clamp(1.2rem, 4vw, 3rem); }
+    .section-full { max-width: none; padding-inline: 0; }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 2rem;
+      margin-bottom: clamp(2rem, 4vw, 3.5rem);
+      padding-bottom: 1.4rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .section-head h2 {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      letter-spacing: -.01em;
+      line-height: 1.15;
+    }
+    .section-no {
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      letter-spacing: .32em;
+      color: var(--muted);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* ───────── METRIC ───────── */
+    .metric-section {
+      background: var(--metric);
+      color: #fff;
+      padding-block: clamp(4.5rem, 8vw, 7rem);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .metric-inner {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding-inline: clamp(1.2rem, 4vw, 3rem);
+    }
+    .metric-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.4rem;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+    .metric-head h2 {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      line-height: 1.15;
+    }
+    .metric-head .section-no { color: rgba(255,255,255,.5); }
+    .metric-sub {
+      max-width: 40em;
+      color: rgba(255,255,255,.62);
+      font-size: .95rem;
+      margin-bottom: 3rem;
+    }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.1);
+    }
+    .metric-cell {
+      background: var(--metric);
+      padding: 1.8rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: .8rem;
+    }
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.55);
+    }
+    .metric-value {
+      font-size: clamp(2rem, 3.6vw, 2.8rem);
+      font-weight: 400;
+      letter-spacing: -.02em;
+      line-height: 1;
+      color: #fff;
+    }
+    .metric-value .delta {
+      color: var(--accent-hi);
+      font-size: .55em;
+      margin-left: .2em;
+      vertical-align: .15em;
+    }
+    .metric-value .unit {
+      color: rgba(255,255,255,.45);
+      font-size: .42em;
+      margin-left: .15em;
+      font-weight: 300;
+    }
+    .metric-meta {
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      color: rgba(255,255,255,.5);
+      letter-spacing: .08em;
+    }
+
+    .monitor {
+      margin-top: 3rem;
+      padding: 1.6rem;
+      background: #0a0a0c;
+      border: 1px solid rgba(255,255,255,.12);
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1.6rem;
+    }
+    .monitor-title {
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--accent-hi);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    .monitor-title::before {
+      content: "";
+      width: .5rem;
+      height: .5rem;
+      background: var(--accent-hi);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-hi);
+      animation: pulse 2s var(--ease) infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .4; }
+    }
+    .monitor-chart {
+      width: 100%;
+      height: 200px;
+    }
+    .monitor-readout {
+      font-family: var(--font-mono);
+      font-size: .8rem;
+      color: rgba(255,255,255,.7);
+      display: flex;
+      flex-direction: column;
+      gap: .8rem;
+      justify-content: center;
+    }
+    .monitor-readout .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: .6rem;
+      border-bottom: 1px dashed rgba(255,255,255,.12);
+    }
+    .monitor-readout .row span:last-child {
+      color: #fff;
+      font-feature-settings: "tnum" 1;
+    }
+    .monitor-readout .row .pos { color: var(--accent-hi); }
+
+    .metric-footnote {
+      margin-top: 2rem;
+      font-size: .78rem;
+      color: rgba(255,255,255,.5);
+      font-family: var(--font-mono);
+      letter-spacing: .04em;
+    }
+
+    /* ───────── PROGRAMS ───────── */
+    .programs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+    .program {
+      background: var(--bg);
+      padding: clamp(1.8rem, 2.8vw, 2.4rem);
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      transition: background .3s var(--ease);
+    }
+    .program:hover { background: #ede9e0; }
+    .program.featured { background: var(--fg); color: var(--bg); }
+    .program.featured:hover { background: #1a1a1d; }
+    .program.featured .program-label,
+    .program.featured .program-meta { color: rgba(255,255,255,.55); }
+    .program.featured .program-list li::before { background: var(--accent); }
+    .program-label {
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .program-badge {
+      padding: .2rem .55rem;
+      background: var(--accent);
+      color: #fff;
+      font-size: .62rem;
+      letter-spacing: .2em;
+      border-radius: 1px;
+    }
+    .program h3 {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 1.7rem;
+      line-height: 1.15;
+      letter-spacing: -.005em;
+    }
+    .program-duration {
+      font-family: var(--font-mono);
+      font-size: 2.4rem;
+      font-weight: 300;
+      letter-spacing: -.01em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .program-duration .unit {
+      font-size: .42em;
+      color: var(--muted);
+      margin-left: .3em;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+    .program.featured .program-duration .unit { color: rgba(255,255,255,.5); }
+    .program-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .55rem;
+      font-size: .9rem;
+      line-height: 1.55;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--line);
+    }
+    .program.featured .program-list { border-color: rgba(255,255,255,.18); }
+    .program-list li {
+      position: relative;
+      padding-left: 1.2rem;
+    }
+    .program-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: .65em;
+      width: .5rem;
+      height: 1px;
+      background: var(--accent);
+    }
+    .program-price {
+      margin-top: auto;
+      padding-top: 1.4rem;
+      border-top: 1px solid var(--line);
+    }
+    .program.featured .program-price { border-color: rgba(255,255,255,.18); }
+    .program-total {
+      font-family: var(--font-mono);
+      font-size: 1.7rem;
+      font-weight: 500;
+      letter-spacing: -.01em;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .program-total small {
+      font-size: .55em;
+      color: var(--muted);
+      font-weight: 400;
+      margin-right: .15em;
+    }
+    .program.featured .program-total small { color: rgba(255,255,255,.55); }
+    .program-monthly {
+      font-family: var(--font-mono);
+      font-size: .78rem;
+      color: var(--muted);
+      margin-top: .35rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .program.featured .program-monthly { color: rgba(255,255,255,.6); }
+
+    .programs-cta {
+      margin-top: 2.4rem;
+      display: flex;
+      align-items: center;
+      gap: 1.6rem;
+      flex-wrap: wrap;
+    }
+    .programs-cta p {
+      max-width: 28em;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    /* ───────── TRAINERS ───────── */
+    .trainers {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(1.5rem, 2.4vw, 2rem);
+    }
+    .trainer {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .trainer-img {
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      background: var(--metric);
+      border: 1px solid var(--line);
+      position: relative;
+    }
+    .trainer-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: grayscale(1) contrast(1.04);
+      transition: transform .8s var(--ease), filter .8s var(--ease);
+    }
+    .trainer:hover .trainer-img img {
+      transform: scale(1.03);
+      filter: grayscale(.85) contrast(1.06);
+    }
+    .trainer-img::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 55%, rgba(14,14,16,.45));
+      pointer-events: none;
+    }
+    .trainer-no {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .22em;
+      color: #fff;
+      z-index: 1;
+    }
+    .trainer-name {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 1.35rem;
+      line-height: 1.2;
+    }
+    .trainer-name .en {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: .35rem;
+      font-weight: 400;
+    }
+    .trainer-role {
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .trainer-bio {
+      font-size: .88rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .trainer-tags {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-top: .4rem;
+    }
+    .trainer-tags li {
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .1em;
+      padding: .3rem .65rem;
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    /* ───────── PHILOSOPHY ───────── */
+    .philosophy {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: clamp(4.5rem, 8vw, 7rem) clamp(1.2rem, 4vw, 3rem);
+      text-align: center;
+    }
+    .philosophy blockquote {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(1.6rem, 3.4vw, 2.6rem);
+      line-height: 1.4;
+      letter-spacing: -.005em;
+    }
+    .philosophy blockquote .accent { color: var(--accent); font-style: normal; }
+    .philosophy cite {
+      display: block;
+      font-style: normal;
+      margin-top: 2rem;
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ───────── FAQ ───────── */
+    .faq {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid var(--line);
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--line);
+    }
+    .faq-q {
+      width: 100%;
+      padding: 1.6rem 0;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 2rem;
+      text-align: left;
+      transition: color .25s var(--ease);
+    }
+    .faq-q:hover { color: var(--accent); }
+    .faq-q-head {
+      display: flex;
+      align-items: baseline;
+      gap: 1.2rem;
+      flex: 1;
+    }
+    .faq-q-no {
+      font-family: var(--font-mono);
+      font-size: .78rem;
+      letter-spacing: .14em;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+    .faq-q-text {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+      line-height: 1.45;
+    }
+    .faq-toggle {
+      flex-shrink: 0;
+      width: 1.2rem;
+      height: 1.2rem;
+      position: relative;
+    }
+    .faq-toggle::before,
+    .faq-toggle::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: currentColor;
+      transition: transform .3s var(--ease);
+    }
+    .faq-toggle::after { transform: rotate(90deg); }
+    .faq-item[open] .faq-toggle::after { transform: rotate(0deg); }
+    .faq-a {
+      padding: 0 0 1.6rem 2.2rem;
+      max-width: 50em;
+      color: var(--muted);
+      font-size: .92rem;
+      line-height: 1.85;
+    }
+
+    /* ───────── ACCESS ───────── */
+    .access {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: clamp(2rem, 5vw, 4rem);
+      align-items: stretch;
+    }
+    .access-info dl {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.1rem 2rem;
+      padding-top: 1rem;
+    }
+    .access-info dt {
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .access-info dd {
+      font-size: .95rem;
+      line-height: 1.7;
+      font-weight: 500;
+    }
+    .access-info dd .num,
+    .access-info dd time {
+      font-weight: 400;
+    }
+    .access-map {
+      aspect-ratio: 4 / 3;
+      background: var(--metric);
+      border: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+    .access-map svg { width: 100%; height: 100%; display: block; }
+    .access-map-stamp {
+      position: absolute;
+      left: 1rem;
+      bottom: 1rem;
+      padding: .6rem .9rem;
+      background: rgba(244,241,236,.92);
+      backdrop-filter: blur(4px);
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      border-left: 2px solid var(--accent);
+    }
+
+    /* ───────── FINAL CTA ───────── */
+    .final-cta {
+      background: var(--fg);
+      color: var(--bg);
+      padding: clamp(4rem, 8vw, 6.5rem) clamp(1.2rem, 4vw, 3rem);
+      text-align: center;
+      border-top: 1px solid var(--line);
+    }
+    .final-cta-inner {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .final-cta h2 {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: clamp(2rem, 4.4vw, 3.4rem);
+      line-height: 1.15;
+      letter-spacing: -.01em;
+    }
+    .final-cta h2 .accent { color: var(--accent); }
+    .final-cta p {
+      margin: 1.6rem auto 0;
+      max-width: 36em;
+      color: rgba(255,255,255,.65);
+      font-size: 1rem;
+      line-height: 1.85;
+    }
+    .final-cta .actions {
+      margin-top: 2.4rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .final-cta .btn-ghost {
+      color: var(--bg);
+      border-color: rgba(255,255,255,.4);
+    }
+    .final-cta .btn-ghost:hover { background: var(--bg); color: var(--fg); border-color: var(--bg); }
+    .final-cta-fineprint {
+      margin-top: 2rem;
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.4);
+    }
+
+    /* ───────── FOOTER ───────── */
+    footer {
+      background: var(--bg);
+      padding: 3rem clamp(1.2rem, 4vw, 3rem) 1.8rem;
+      border-top: 1px solid var(--line);
+    }
+    .foot-grid {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 2.5rem;
+      padding-bottom: 2.4rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .foot-brand {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      letter-spacing: .22em;
+      margin-bottom: .8rem;
+    }
+    .foot-tag {
+      font-size: .85rem;
+      color: var(--muted);
+      max-width: 22em;
+      line-height: 1.7;
+    }
+    .foot-col h4 {
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+    .foot-col ul { list-style: none; display: flex; flex-direction: column; gap: .55rem; font-size: .88rem; }
+    .foot-col a { transition: color .25s var(--ease); }
+    .foot-col a:hover { color: var(--accent); }
+    .foot-bottom {
+      max-width: var(--maxw);
+      margin: 1.8rem auto 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-family: var(--font-mono);
+      font-size: .7rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ───────── REVEAL ANIM ───────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .8s var(--ease), transform .8s var(--ease);
+    }
+    .reveal.in {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ───────── MOBILE ───────── */
+    @media (max-width: 768px) {
+      nav.top ul { display: none; }
+      .header-phone { display: none; }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding-top: 2.5rem;
+        gap: 2rem;
+      }
+      .hero h1 { font-size: clamp(2.6rem, 11vw, 3.6rem); font-weight: 400; }
+      .hero h1 .serif-it { font-weight: 400; }
+      .hero-figure { aspect-ratio: 4 / 5; }
+
+      .section-head { flex-direction: column; align-items: flex-start; gap: .6rem; }
+      .metric-head { flex-direction: column; align-items: flex-start; gap: .6rem; }
+
+      .metric-grid { grid-template-columns: repeat(2, 1fr); }
+      .monitor { grid-template-columns: 1fr; }
+      .monitor-chart { height: 160px; }
+
+      .programs { grid-template-columns: 1fr; }
+      .trainers { grid-template-columns: 1fr; gap: 2.5rem; }
+      .access { grid-template-columns: 1fr; }
+
+      .foot-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .foot-bottom { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 480px) {
+      .metric-grid { grid-template-columns: 1fr; }
+      .metric-value { font-size: 2rem; }
+      .program-duration { font-size: 2rem; }
+      .hero-actions .btn { width: 100%; justify-content: center; }
+    }
+
+    /* ───────── REDUCED MOTION ───────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+        scroll-behavior: auto !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="#top" aria-label="FORGE STUDIO ホーム">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>FORGE STUDIO</span>
+  </a>
+  <nav class="top" aria-label="グローバル">
+    <ul>
+      <li><a href="#metric">METRIC</a></li>
+      <li><a href="#programs">Programs</a></li>
+      <li><a href="#trainers">Trainers</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#access">Access</a></li>
+    </ul>
+  </nav>
+  <div class="header-cta">
+    <span class="header-phone num">03&#8209;0000&#8209;0000</span>
+    <a class="btn" href="#counseling">無料カウンセリング予約 <span class="arrow" aria-hidden="true">→</span></a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ───────── HERO ───────── -->
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="hero-eyebrow num">Vol. 02 / 2026 — PREMIUM PERSONAL TRAINING</div>
+      <h1>
+        静かに、確実に、<br>
+        <span class="serif-it">鍛え</span>直す。<br>
+        <span class="accent">12週間。</span>
+      </h1>
+      <p class="hero-lead">FORGE STUDIO は、煽らない。誇張しない。3〜6 ヶ月という有限の時間のなかで、体組成の数値だけが静かに変わっていく。鉄を打つように、毎週、確かな手応えを積み上げる premium personal training boutique。</p>
+      <div class="hero-actions">
+        <a class="btn" href="#counseling">無料カウンセリング予約 <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn-ghost" href="#programs">プログラムを見る</a>
+      </div>
+      <p class="hero-fineprint num">— SINCE 2021 / EBISU TOKYO</p>
+    </div>
+
+    <figure class="hero-figure" aria-label="鋳鉄のダンベルのマクロ撮影、グレースケール">
+      <img src="https://images.unsplash.com/photo-1534258936925-c58bed479fcb?auto=format&fit=crop&w=1200&q=80" loading="eager" alt="グレースケールで撮影された鋳鉄ダンベルのマクロ。鉄の質感と陰影が伝わる静止画。" />
+      <div class="hero-figure-stat num" role="img" aria-label="平均達成率94%">
+        <strong>94<span style="font-size:.7em">%</span></strong>
+        12週完走者の目標達成率
+      </div>
+      <figcaption class="hero-figure-stamp num">No. 01 — FORGE</figcaption>
+    </figure>
+  </section>
+
+  <!-- ───────── METRIC ───────── -->
+  <section class="metric-section section-full" id="metric">
+    <div class="metric-inner">
+      <div class="metric-head">
+        <h2>数値で証明する transformation。</h2>
+        <span class="section-no num">— 02 / METRIC</span>
+      </div>
+      <p class="metric-sub">顔写真の比較は載せていません。体組成計（InBody 770）が測る、4 つの指標の平均変化値だけを開示しています。直近 12 ヶ月、12 週プログラム完走者 N=128 の実測平均。</p>
+
+      <div class="metric-grid" role="list">
+        <div class="metric-cell" role="listitem">
+          <span class="metric-label">Body Fat %</span>
+          <span class="metric-value num">&minus;6.4<span class="unit">pt</span></span>
+          <span class="metric-meta num">22.1 → 15.7 / 12 weeks</span>
+        </div>
+        <div class="metric-cell" role="listitem">
+          <span class="metric-label">Lean Mass</span>
+          <span class="metric-value num">+2.1<span class="unit">kg</span></span>
+          <span class="metric-meta num">52.3 → 54.4 / +4.0%</span>
+        </div>
+        <div class="metric-cell" role="listitem">
+          <span class="metric-label">Waist</span>
+          <span class="metric-value num">&minus;7.8<span class="unit">cm</span></span>
+          <span class="metric-meta num">83.4 → 75.6 / circumference</span>
+        </div>
+        <div class="metric-cell" role="listitem">
+          <span class="metric-label">VO₂ Max</span>
+          <span class="metric-value num">+5.2<span class="unit">ml/kg/min</span></span>
+          <span class="metric-meta num">36.8 → 42.0 / cardio</span>
+        </div>
+      </div>
+
+      <div class="monitor" aria-label="12週間の体組成変化グラフ">
+        <div>
+          <p class="monitor-title num">LIVE READOUT / 12-WEEK AVERAGE</p>
+          <svg class="monitor-chart" viewBox="0 0 600 220" preserveAspectRatio="none" role="img" aria-label="12週間にわたる体脂肪率と除脂肪量の推移を示すラインチャート">
+            <!-- grid -->
+            <g stroke="rgba(255,255,255,.06)" stroke-width="1">
+              <line x1="0" y1="40" x2="600" y2="40"/>
+              <line x1="0" y1="90" x2="600" y2="90"/>
+              <line x1="0" y1="140" x2="600" y2="140"/>
+              <line x1="0" y1="190" x2="600" y2="190"/>
+            </g>
+            <g stroke="rgba(255,255,255,.04)" stroke-width="1" stroke-dasharray="2 4">
+              <line x1="100" y1="10" x2="100" y2="210"/>
+              <line x1="200" y1="10" x2="200" y2="210"/>
+              <line x1="300" y1="10" x2="300" y2="210"/>
+              <line x1="400" y1="10" x2="400" y2="210"/>
+              <line x1="500" y1="10" x2="500" y2="210"/>
+            </g>
+            <!-- body fat % falling -->
+            <path d="M 20,55 L 70,62 L 130,75 L 200,92 L 270,110 L 340,128 L 410,148 L 480,162 L 560,175"
+                  fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- lean mass rising -->
+            <path d="M 20,140 L 70,135 L 130,128 L 200,118 L 270,108 L 340,100 L 410,92 L 480,86 L 560,80"
+                  fill="none" stroke="rgba(255,255,255,.78)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 3"/>
+            <!-- data points -->
+            <g fill="#ea580c">
+              <circle cx="20" cy="55" r="3"/>
+              <circle cx="200" cy="92" r="3"/>
+              <circle cx="410" cy="148" r="3"/>
+              <circle cx="560" cy="175" r="4"/>
+            </g>
+            <!-- labels -->
+            <g fill="rgba(255,255,255,.5)" font-family="JetBrains Mono" font-size="9" letter-spacing="1">
+              <text x="20" y="208">W1</text>
+              <text x="195" y="208">W4</text>
+              <text x="395" y="208">W8</text>
+              <text x="545" y="208">W12</text>
+            </g>
+            <g fill="#ea580c" font-family="JetBrains Mono" font-size="9" font-weight="500" letter-spacing=".5">
+              <text x="20" y="40">BODY FAT %</text>
+            </g>
+            <g fill="rgba(255,255,255,.65)" font-family="JetBrains Mono" font-size="9" font-weight="400" letter-spacing=".5">
+              <text x="430" y="72">LEAN MASS</text>
+            </g>
+          </svg>
+        </div>
+        <div class="monitor-readout">
+          <div class="row"><span>SESSION</span><span>034 / 048</span></div>
+          <div class="row"><span>WEIGHT</span><span>68.2 kg <span class="pos">&minus;5.8</span></span></div>
+          <div class="row"><span>FAT MASS</span><span>10.7 kg <span class="pos">&minus;6.1</span></span></div>
+          <div class="row"><span>BMR</span><span>1,482 kcal <span class="pos">+92</span></span></div>
+          <div class="row"><span>STATUS</span><span style="color:#ea580c">ON TRACK</span></div>
+        </div>
+      </div>
+
+      <p class="metric-footnote">※ 数値は 2025/06 – 2026/05、12週プログラム完走者 128 名の平均値。個人差があります。</p>
+    </div>
+  </section>
+
+  <!-- ───────── PROGRAMS ───────── -->
+  <section id="programs">
+    <div class="section-head">
+      <h2>プログラム — 3 種のコース。</h2>
+      <span class="section-no num">— 03 / PROGRAMS</span>
+    </div>
+
+    <div class="programs">
+
+      <article class="program">
+        <div class="program-label">
+          <span>Reshape Starter</span>
+          <span>04</span>
+        </div>
+        <h3>体型の基礎を整える。</h3>
+        <p class="program-duration num">12<span class="unit">weeks</span></p>
+        <ul class="program-list">
+          <li>週 2 回・60 分のマンツーマン</li>
+          <li>InBody 測定 / 4 週ごと</li>
+          <li>食事ガイダンス（強い制限なし）</li>
+          <li>ウェア・タオル・水 込み</li>
+        </ul>
+        <div class="program-price">
+          <span class="program-total"><small>¥</small>328,000</span>
+          <span class="program-monthly">月々 ¥28,600 〜（12回分割）</span>
+        </div>
+      </article>
+
+      <article class="program featured" aria-label="Forge Core — 推奨プログラム">
+        <div class="program-label">
+          <span>Forge Core</span>
+          <span class="program-badge num">RECOMMENDED</span>
+        </div>
+        <h3>本気で変える、定番16週。</h3>
+        <p class="program-duration num">16<span class="unit">weeks</span></p>
+        <ul class="program-list">
+          <li>週 2 回・75 分のマンツーマン</li>
+          <li>InBody 測定 / 2 週ごと</li>
+          <li>管理栄養士の食事計画（個別）</li>
+          <li>専用アプリで毎日 24h サポート</li>
+          <li>休会・延長制度 あり</li>
+        </ul>
+        <div class="program-price">
+          <span class="program-total"><small>¥</small>498,000</span>
+          <span class="program-monthly">月々 ¥41,700 〜（12回分割）</span>
+        </div>
+      </article>
+
+      <article class="program">
+        <div class="program-label">
+          <span>Deep Reset</span>
+          <span>06</span>
+        </div>
+        <h3>長期で生活ごと書き換える。</h3>
+        <p class="program-duration num">24<span class="unit">weeks</span></p>
+        <ul class="program-list">
+          <li>週 2–3 回・75 分のマンツーマン</li>
+          <li>InBody + DEXA スキャン</li>
+          <li>専属栄養士・睡眠コーチ付帯</li>
+          <li>修了後 6 ヶ月のメンテ込み</li>
+        </ul>
+        <div class="program-price">
+          <span class="program-total"><small>¥</small>768,000</span>
+          <span class="program-monthly">月々 ¥64,000 〜（12回分割）</span>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="programs-cta">
+      <p>料金は税込・入会金別（¥33,000）。30 日間全額返金保証あり。まずは無料カウンセリングで、自分に合うプログラムを見つけてください。</p>
+      <a class="btn" href="#counseling">無料カウンセリング予約 <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <!-- ───────── TRAINERS ───────── -->
+  <section id="trainers">
+    <div class="section-head">
+      <h2>トレーナー — 実績と資格。</h2>
+      <span class="section-no num">— 04 / TRAINERS</span>
+    </div>
+
+    <div class="trainers">
+      <article class="trainer">
+        <div class="trainer-img">
+          <span class="trainer-no num">T—01</span>
+          <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=80" loading="lazy" alt="ジムでクライアントの姿勢を確認するトレーナーのモノクロ写真。" />
+        </div>
+        <p class="trainer-role">Head Trainer / 共同創業者</p>
+        <h3 class="trainer-name">藤村 蓮<span class="en">Ren Fujimura</span></h3>
+        <p class="trainer-bio">NSCA-CSCS。元・大学アメフト部 S&amp;C コーチ。シニア女性から経営者層まで担当 800 名超。「無理させず、退屈もさせない」がモットー。</p>
+        <ul class="trainer-tags">
+          <li>CSCS</li>
+          <li>NASM-PES</li>
+          <li>担当 800+</li>
+        </ul>
+      </article>
+
+      <article class="trainer">
+        <div class="trainer-img">
+          <span class="trainer-no num">T—02</span>
+          <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=900&q=80" loading="lazy" alt="ケトルベルとプレートが並ぶジムの一角を歩くトレーナーのモノクロ写真。" />
+        </div>
+        <p class="trainer-role">Nutrition Lead</p>
+        <h3 class="trainer-name">高野 結衣<span class="en">Yui Takano</span></h3>
+        <p class="trainer-bio">管理栄養士。糖質制限に頼らない PFC 設計と、忙しい社会人向け作り置きメソッドが得意。産後リシェイプ担当 200 名超。</p>
+        <ul class="trainer-tags">
+          <li>管理栄養士</li>
+          <li>NSCA-CPT</li>
+          <li>産後特化</li>
+        </ul>
+      </article>
+
+      <article class="trainer">
+        <div class="trainer-img">
+          <span class="trainer-no num">T—03</span>
+          <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=900&q=80" loading="lazy" alt="バーベルを構える人物のシルエット、グレースケールの写真。" />
+        </div>
+        <p class="trainer-role">Performance Trainer</p>
+        <h3 class="trainer-name">小坂 直<span class="en">Nao Kosaka</span></h3>
+        <p class="trainer-bio">理学療法士 + JATI-ATI。腰痛・膝痛など既往歴を抱えるクライアント担当。可動域と痛みの評価から再設計する、安全寄りのアプローチ。</p>
+        <ul class="trainer-tags">
+          <li>理学療法士</li>
+          <li>JATI-ATI</li>
+          <li>傷害復帰</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- ───────── PHILOSOPHY ───────── -->
+  <section class="philosophy">
+    <blockquote>
+      “ 派手な数字ではなく、<br>
+      <span class="accent">続けられる仕組み</span>を渡す。<br>
+      鉄は静かに、しかし確実に形を変える。 ”
+    </blockquote>
+    <cite>— FORGE STUDIO / Founding Principle</cite>
+  </section>
+
+  <!-- ───────── FAQ ───────── -->
+  <section id="faq">
+    <div class="section-head">
+      <h2>よくあるご質問。</h2>
+      <span class="section-no num">— 05 / FAQ</span>
+    </div>
+
+    <div class="faq">
+      <details class="faq-item">
+        <summary class="faq-q">
+          <span class="faq-q-head">
+            <span class="faq-q-no num">Q.01</span>
+            <span class="faq-q-text">糖質を完全に抜く必要はありますか？</span>
+          </span>
+          <span class="faq-toggle" aria-hidden="true"></span>
+        </summary>
+        <p class="faq-a">いいえ。FORGE STUDIO は極端な糖質制限を行いません。PFC バランスを個別に算出し、外食やコンビニも許容範囲で組み込みます。長期で続かない食事プランは、長期で結果も残らないと考えています。</p>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">
+          <span class="faq-q-head">
+            <span class="faq-q-no num">Q.02</span>
+            <span class="faq-q-text">運動経験がまったくなくても大丈夫ですか？</span>
+          </span>
+          <span class="faq-toggle" aria-hidden="true"></span>
+        </summary>
+        <p class="faq-a">問題ありません。会員の 6 割は運動歴ゼロからのスタートです。初週は可動域評価とフォーム習得のみで、負荷をかけません。痛みや既往歴がある場合は理学療法士資格を持つトレーナーが担当します。</p>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">
+          <span class="faq-q-head">
+            <span class="faq-q-no num">Q.03</span>
+            <span class="faq-q-text">途中で続けられなくなったら返金できますか？</span>
+          </span>
+          <span class="faq-toggle" aria-hidden="true"></span>
+        </summary>
+        <p class="faq-a">入会から 30 日以内であれば、理由を問わず全額返金いたします。31 日目以降は、残回数に応じた日割り返金にも対応しています。長期休会（最長 6 ヶ月）も無料で利用できます。</p>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">
+          <span class="faq-q-head">
+            <span class="faq-q-no num">Q.04</span>
+            <span class="faq-q-text">出張や転勤が多くても通えますか？</span>
+          </span>
+          <span class="faq-toggle" aria-hidden="true"></span>
+        </summary>
+        <p class="faq-a">出張中はオンラインセッション（25 分）に振り替え可能です。専用アプリで毎日の食事写真をトレーナーがレビューしますので、対面が難しい期間も伴走できます。</p>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">
+          <span class="faq-q-head">
+            <span class="faq-q-no num">Q.05</span>
+            <span class="faq-q-text">ビフォーアフター写真は撮影されますか？</span>
+          </span>
+          <span class="faq-toggle" aria-hidden="true"></span>
+        </summary>
+        <p class="faq-a">撮影は任意です。FORGE STUDIO は顔写真を用いた広告を行いません。記録目的の体組成測定（InBody）が中心で、写真の有無は会員のご希望に従います。</p>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">
+          <span class="faq-q-head">
+            <span class="faq-q-no num">Q.06</span>
+            <span class="faq-q-text">プログラム終了後はどうなりますか？</span>
+          </span>
+          <span class="faq-toggle" aria-hidden="true"></span>
+        </summary>
+        <p class="faq-a">維持を目的とした月 2 回のメンテナンスプラン（¥19,800 / 月）をご用意しています。Deep Reset 修了者は最初の 6 ヶ月が含まれます。リバウンドは「終わり方」の設計で防げる、と考えています。</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- ───────── ACCESS ───────── -->
+  <section id="access">
+    <div class="section-head">
+      <h2>店舗・アクセス。</h2>
+      <span class="section-no num">— 06 / ACCESS</span>
+    </div>
+
+    <div class="access">
+      <div class="access-info">
+        <dl>
+          <dt>Address</dt>
+          <dd>東京都渋谷区恵比寿 2&minus;14&minus;8 / FORGE BLDG. 3F</dd>
+          <dt>Hours</dt>
+          <dd><time>07:00</time> – <time>23:00</time> / 完全予約制 / 年中無休（年末年始除く）</dd>
+          <dt>Access</dt>
+          <dd>JR・東京メトロ「恵比寿」駅 東口より徒歩 <span class="num">5</span> 分<br>東京メトロ日比谷線「広尾」駅 1 番出口より徒歩 <span class="num">9</span> 分</dd>
+          <dt>Contact</dt>
+          <dd><span class="num">03&#8209;0000&#8209;0000</span><br>hello@forge-studio.example</dd>
+          <dt>Booking</dt>
+          <dd>無料カウンセリング所要 <span class="num">60</span> 分。ウェア・シャワー設備完備、手ぶらでお越しいただけます。</dd>
+        </dl>
+      </div>
+
+      <div class="access-map" aria-hidden="true">
+        <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+          <rect width="400" height="300" fill="#1a1a1d"/>
+          <!-- street grid -->
+          <g stroke="rgba(255,255,255,.08)" stroke-width="1">
+            <line x1="0" y1="60" x2="400" y2="60"/>
+            <line x1="0" y1="120" x2="400" y2="120"/>
+            <line x1="0" y1="180" x2="400" y2="180"/>
+            <line x1="0" y1="240" x2="400" y2="240"/>
+            <line x1="80" y1="0" x2="80" y2="300"/>
+            <line x1="160" y1="0" x2="160" y2="300"/>
+            <line x1="240" y1="0" x2="240" y2="300"/>
+            <line x1="320" y1="0" x2="320" y2="300"/>
+          </g>
+          <!-- main avenue diagonal -->
+          <path d="M 0 280 L 400 80" stroke="rgba(234,88,12,.22)" stroke-width="14" fill="none" stroke-linecap="round"/>
+          <path d="M 0 280 L 400 80" stroke="rgba(255,255,255,.45)" stroke-width="1" stroke-dasharray="4 6" fill="none"/>
+          <!-- station -->
+          <g transform="translate(60 240)">
+            <circle r="6" fill="#fff"/>
+            <text x="14" y="4" fill="#fff" font-family="JetBrains Mono" font-size="9" letter-spacing="1">EBISU STA.</text>
+          </g>
+          <!-- studio pin -->
+          <g transform="translate(240 130)">
+            <circle r="14" fill="rgba(234,88,12,.18)"/>
+            <circle r="8" fill="#ea580c"/>
+            <circle r="3" fill="#fff"/>
+            <text x="18" y="4" fill="#ea580c" font-family="JetBrains Mono" font-size="10" font-weight="500" letter-spacing="1">FORGE STUDIO</text>
+            <text x="18" y="18" fill="rgba(255,255,255,.6)" font-family="JetBrains Mono" font-size="8" letter-spacing="1">3F</text>
+          </g>
+          <!-- compass -->
+          <g transform="translate(360 30)" fill="rgba(255,255,255,.5)" font-family="JetBrains Mono" font-size="9">
+            <text x="-3" y="-6">N</text>
+            <line x1="0" y1="-4" x2="0" y2="14" stroke="rgba(255,255,255,.5)"/>
+            <polygon points="0,-4 -3,2 3,2" fill="#ea580c"/>
+          </g>
+        </svg>
+        <span class="access-map-stamp">EBISU / 3F</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ───────── FINAL CTA ───────── -->
+<section class="final-cta" id="counseling">
+  <div class="final-cta-inner">
+    <h2>まずは、<span class="accent">60 分</span>の<br>無料カウンセリングから。</h2>
+    <p>体組成測定、生活と目的のヒアリング、3 種のプログラム比較。勧誘はありません。「やらない」という結論で帰っていただいても構いません。判断材料を持ち帰ってください。</p>
+    <div class="actions">
+      <a class="btn" href="#">予約フォームへ <span class="arrow" aria-hidden="true">→</span></a>
+      <a class="btn btn-ghost" href="tel:0300000000">電話で予約する</a>
+    </div>
+    <p class="final-cta-fineprint num">— FREE / 60 MIN / NO HARD-SELL</p>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-grid">
+    <div>
+      <p class="foot-brand">FORGE STUDIO</p>
+      <p class="foot-tag">煽らず、数値で示す。3〜6 ヶ月の有限の時間で、静かに体を鍛え直す premium personal training boutique。</p>
+    </div>
+    <div class="foot-col">
+      <h4>Studio</h4>
+      <ul>
+        <li><a href="#metric">METRIC</a></li>
+        <li><a href="#programs">Programs</a></li>
+        <li><a href="#trainers">Trainers</a></li>
+        <li><a href="#access">Access</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#counseling">無料カウンセリング</a></li>
+        <li><a href="#">採用情報</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">note</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 FORGE STUDIO — 架空ブランド / Fictional</span>
+    <span>For design study by torifo</span>
+  </div>
+</footer>
+
+<script>
+  // Header phone visibility on wider screens
+  (function () {
+    if (window.matchMedia('(min-width: 980px)').matches) {
+      document.querySelector('.header-phone').style.display = 'inline';
+    }
+  })();
+
+  // Reveal on scroll (respects prefers-reduced-motion via the CSS query)
+  (function () {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const targets = document.querySelectorAll('section, .program, .trainer, .metric-cell');
+    targets.forEach(t => t.classList.add('reveal'));
+    if (prefersReduced || !('IntersectionObserver' in window)) {
+      targets.forEach(t => t.classList.add('in'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.08 });
+    targets.forEach(t => io.observe(t));
+  })();
+
+  // Single-open behaviour for FAQ
+  (function () {
+    const items = document.querySelectorAll('.faq-item');
+    items.forEach(item => {
+      item.addEventListener('toggle', () => {
+        if (item.open) {
+          items.forEach(other => { if (other !== item) other.open = false; });
+        }
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
