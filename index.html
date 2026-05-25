@@ -164,6 +164,9 @@
       overflow-wrap: normal;
       flex: 0 0 auto;
     }
+    @media (min-width: 1121px) {
+      .header-phone { display: inline; }
+    }
 
     /* ───────── HERO ───────── */
     .hero {
@@ -969,7 +972,7 @@
       .header-cta .btn .short-label { display: inline; }
       .header-cta .btn .arrow { display: none; }
       nav.top ul { display: none; }
-      .header-phone { display: none; }
+      .header-phone { display: none !important; }
 
       .hero {
         grid-template-columns: 1fr;
@@ -1500,13 +1503,6 @@
 </footer>
 
 <script>
-  // Header phone visibility on wider screens
-  (function () {
-    if (window.matchMedia('(min-width: 1121px)').matches) {
-      document.querySelector('.header-phone').style.display = 'inline';
-    }
-  })();
-
   // Keep the hero visual intact even if the remote photo CDN fails.
   (function () {
     const heroImage = document.querySelector('.hero-figure img');
