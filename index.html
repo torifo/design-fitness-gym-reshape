@@ -143,6 +143,7 @@
     .btn:hover { background: var(--accent-hi); transform: translateY(-1px); }
     .btn .arrow { transition: transform .25s var(--ease); }
     .btn:hover .arrow { transform: translateX(4px); }
+    .btn .short-label { display: none; }
     .btn-ghost {
       background: transparent;
       color: var(--fg);
@@ -726,6 +727,7 @@
       align-items: baseline;
       gap: 1.2rem;
       flex: 1;
+      min-width: 0;
     }
     .faq-q-no {
       font-family: var(--font-mono);
@@ -739,6 +741,7 @@
       font-weight: 400;
       font-size: clamp(1.05rem, 1.4vw, 1.2rem);
       line-height: 1.45;
+      min-width: 0;
     }
     .faq-toggle {
       flex-shrink: 0;
@@ -761,7 +764,7 @@
     .faq-item[open] .faq-toggle::after { transform: rotate(0deg); }
     .faq-a {
       padding: 0 0 1.6rem 2.2rem;
-      max-width: 50em;
+      max-width: none;
       color: var(--muted);
       font-size: .92rem;
       line-height: 1.85;
@@ -934,6 +937,28 @@
 
     /* ───────── MOBILE ───────── */
     @media (max-width: 768px) {
+      header {
+        padding: .85rem clamp(.9rem, 4vw, 1.2rem);
+        gap: .8rem;
+      }
+      .brand {
+        gap: .45rem;
+        font-size: clamp(.86rem, 4vw, 1rem);
+        letter-spacing: .12em;
+      }
+      .brand-mark {
+        width: .9rem;
+        height: .9rem;
+      }
+      .header-cta { gap: 0; }
+      .header-cta .btn {
+        padding: .72rem .85rem;
+        font-size: .72rem;
+        letter-spacing: .06em;
+      }
+      .header-cta .btn .full-label { display: none; }
+      .header-cta .btn .short-label { display: inline; }
+      .header-cta .btn .arrow { display: none; }
       nav.top ul { display: none; }
       .header-phone { display: none; }
 
@@ -948,6 +973,17 @@
 
       .section-head { flex-direction: column; align-items: flex-start; gap: .6rem; }
       .metric-head { flex-direction: column; align-items: flex-start; gap: .6rem; }
+      .faq-q {
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      .faq-q-head {
+        flex-direction: column;
+        gap: .35rem;
+      }
+      .faq-a {
+        padding-left: 0;
+      }
 
       .metric-grid { grid-template-columns: repeat(2, 1fr); }
       .monitor { grid-template-columns: 1fr; }
@@ -966,6 +1002,7 @@
       .metric-value { font-size: 2rem; }
       .program-duration { font-size: 2rem; }
       .hero-actions .btn { width: 100%; justify-content: center; }
+      .brand { letter-spacing: .08em; }
     }
 
     /* ───────── REDUCED MOTION ───────── */
@@ -998,7 +1035,7 @@
   </nav>
   <div class="header-cta">
     <span class="header-phone num">03&#8209;0000&#8209;0000</span>
-    <a class="btn" href="#counseling">無料カウンセリング予約 <span class="arrow" aria-hidden="true">→</span></a>
+    <a class="btn" href="#counseling"><span class="full-label">無料カウンセリング予約</span><span class="short-label">予約</span> <span class="arrow" aria-hidden="true">→</span></a>
   </div>
 </header>
 
@@ -1265,7 +1302,7 @@
   <!-- ───────── FAQ ───────── -->
   <section id="faq">
     <div class="section-head">
-      <h2>よくあるご質問。</h2>
+      <h2>よくあるご質問</h2>
       <span class="section-no num">— 05 / FAQ</span>
     </div>
 
