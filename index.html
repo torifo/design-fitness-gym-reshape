@@ -244,6 +244,11 @@
       transition: transform 1.2s var(--ease), opacity .8s var(--ease);
     }
     .hero-figure:hover img { transform: scale(1.04); opacity: 1; }
+    .hero-figure img.is-fallback {
+      object-fit: cover;
+      filter: grayscale(1) contrast(1.12);
+      opacity: .92;
+    }
     .hero-figure-stamp {
       position: absolute;
       left: 0;
@@ -1492,6 +1497,46 @@
     if (window.matchMedia('(min-width: 980px)').matches) {
       document.querySelector('.header-phone').style.display = 'inline';
     }
+  })();
+
+  // Keep the hero visual intact even if the remote photo CDN fails.
+  (function () {
+    const heroImage = document.querySelector('.hero-figure img');
+    if (!heroImage) return;
+
+    const fallback = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200">
+        <defs>
+          <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#2b2b2d"/>
+            <stop offset=".52" stop-color="#0e0e10"/>
+            <stop offset="1" stop-color="#3a332d"/>
+          </linearGradient>
+          <filter id="grain">
+            <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="4"/>
+            <feColorMatrix values="0 0 0 0 0.55 0 0 0 0 0.55 0 0 0 0 0.55 0 0 0 .18 0"/>
+          </filter>
+        </defs>
+        <rect width="900" height="1200" fill="url(#bg)"/>
+        <rect width="900" height="1200" filter="url(#grain)" opacity=".45"/>
+        <g fill="none" stroke="#d8d1c5" stroke-linecap="square" opacity=".72">
+          <path d="M180 760h540" stroke-width="34"/>
+          <path d="M145 650h70v220h-70zM685 650h70v220h-70z" stroke-width="28"/>
+          <path d="M250 705h400M250 815h400" stroke-width="12" opacity=".45"/>
+        </g>
+        <g fill="#f4f1ec" font-family="Arial, sans-serif" opacity=".82">
+          <text x="78" y="116" font-size="28" letter-spacing="8">FORGE STUDIO</text>
+          <text x="78" y="178" font-size="18" letter-spacing="5">BODY COMPOSITION / 12 WEEKS</text>
+        </g>
+      </svg>
+    `);
+
+    heroImage.addEventListener('error', () => {
+      if (heroImage.dataset.fallbackApplied) return;
+      heroImage.dataset.fallbackApplied = 'true';
+      heroImage.classList.add('is-fallback');
+      heroImage.src = fallback;
+    });
   })();
 
   // Reveal on scroll (respects prefers-reduced-motion via the CSS query)
