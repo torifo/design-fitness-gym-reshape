@@ -159,6 +159,10 @@
       letter-spacing: .12em;
       color: var(--muted);
       font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      word-break: keep-all;
+      overflow-wrap: normal;
+      flex: 0 0 auto;
     }
 
     /* ───────── HERO ───────── */
@@ -1002,6 +1006,10 @@
       .foot-bottom { flex-direction: column; align-items: flex-start; }
     }
 
+    @media (min-width: 769px) and (max-width: 1120px) {
+      .header-phone { display: none !important; }
+    }
+
     @media (max-width: 480px) {
       .metric-grid { grid-template-columns: 1fr; }
       .metric-value { font-size: 2rem; }
@@ -1494,7 +1502,7 @@
 <script>
   // Header phone visibility on wider screens
   (function () {
-    if (window.matchMedia('(min-width: 980px)').matches) {
+    if (window.matchMedia('(min-width: 1121px)').matches) {
       document.querySelector('.header-phone').style.display = 'inline';
     }
   })();
